@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  wordpress:
+    image: wordpress:php8.2-apache
+    ports:
+      - "8000:80"
+    volumes:
+      - ./bedrock:/var/www/html
+    depends_on:
+      - db
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: bedrock
+      WORDPRESS_DB_USER: bedrock
+      WORDPRESS_DB_PASSWORD: bedrock
+
+  db:
+    image: mariadb:10.6
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: bedrock
+      MYSQL_USER: bedrock
+      MYSQL_PASSWORD: bedrock
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root
+
+volumes:
+  db_data:
